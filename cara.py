@@ -1,12 +1,13 @@
 import time
 import cv2
 import numpy as np
+import dlib
 import keyboard
 
 def Viola_Jones(frame):
     vgframe = frame.copy()
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    faces = face_cascade.detectMultiScale(frame, 1.05, 4, minSize=(30, 30), maxSize=(180, 180))
+    faces = face_cascade.detectMultiScale(frame, 1.1, 5, minSize=(30, 30), maxSize=(180, 180))
     for (x, y, w, h) in faces:
         cv2.rectangle(vgframe, (x, y), (x+w, y+h), (255, 0, 0), 2)
     cv2.imshow("VJ", vgframe)    
@@ -16,7 +17,7 @@ def hog_face(frame):
     hogf = frame.copy()   
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
-    boxes, weights = hog.detectMultiScale(frame, winStride=(8, 8))
+    boxes, weights = hog.detectMultiScale(hogf, winStride=(8, 8), padding=(8, 8), scale=1.05, useMeanshiftGrouping=False)
     for (x, y, w, h) in boxes:
         cv2.rectangle(hogf, (x, y), (x+w, y+h), (0, 255, 0), 2)
     cv2.imshow("HOG", hogf)
