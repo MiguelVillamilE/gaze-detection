@@ -4,14 +4,15 @@ import numpy as np
 import dlib
 import keyboard
 
+
 def Viola_Jones(frame):
-    vgframe = frame.copy()
+    vjframe = frame.copy()
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     faces = face_cascade.detectMultiScale(frame, 1.1, 5, minSize=(30, 30), maxSize=(180, 180))
     for (x, y, w, h) in faces:
-        cv2.rectangle(vgframe, (x, y), (x+w, y+h), (255, 0, 0), 2)
-    cv2.imshow("VJ", vgframe)    
-    return vgframe
+        cv2.rectangle(vjframe, (x, y), (x+w, y+h), (255, 0, 0), 2)
+    cv2.imshow("VJ", vjframe)    
+    return vjframe, x, y x+w, y+h
 
 def hog_face(frame):
     hogf = frame.copy()   
@@ -22,7 +23,23 @@ def hog_face(frame):
         cv2.rectangle(hogf, (x, y), (x+w, y+h), (0, 255, 0), 2)
     cv2.imshow("HOG", hogf)
     return hogf
-  
+
+
+# Initialize the HOG-based face detector
+
+def hog_face_dlib(frame):
+    hogf = frame.copy()
+    faces = detector(hogf, 1)
+    for face in faces:
+        x1 = face.left()
+        y1 = face.top()
+        x2 = face.right()
+        y2 = face.bottom()
+        cv2.rectangle(hogf, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    cv2.imshow("HOG DLIB", hogf)
+    return hogf, x1, y1, x2, y2
+# 
+
 
 def gray(frame):
     frame = cv2.resize(frame, (300, 300))
@@ -48,6 +65,7 @@ def threshold(frame):
 #####################################################################################################
 
 
+
 #video = cv2.VideoCapture("C:/Users/migue/Documents/ProyectosPython/pruebasVgame/videos/v1.mp4")
 #video = cv2.VideoCapture("videos/v5.mp4")
 video = cv2.VideoCapture(0) 
@@ -55,7 +73,7 @@ if not video.isOpened():
     print("Error: No se pudo abrir el archivo de video.")
     exit()
 
-
+detector = dlib.get_frontal_face_detector()
 tiempo_anterior = 0
 while True: 
     ret, frame = video.read()
@@ -70,8 +88,8 @@ while True:
     texto_fps = f"FPS: {int(fps)}"
 
     gray1 = gray(frame)
-    vj1 = Viola_Jones(gray1)
-    hog = hog_face(gray1)
+    #vj1 = Viola_Jones(gray1)
+    hog = hog_face_dlib(gray1)
 
     #t1,t2,t3 = threshold(gray1)
     
