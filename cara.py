@@ -2,6 +2,7 @@ import time
 import cv2
 import numpy as np
 import dlib
+#from picamera2 import Picamera2
 import keyboard
 
 
@@ -97,13 +98,24 @@ def gray(frame):
 #####################################################################################################
 
 
-
+#usando Opencv
 #video = cv2.VideoCapture("C:/Users/migue/Documents/ProyectosPython/pruebasVgame/videos/v1.mp4")
 video = cv2.VideoCapture("videos/video1.mp4")
 #video = cv2.VideoCapture(0) 
 if not video.isOpened():
     print("Error: No se pudo abrir el archivo de video.")
     exit()
+
+#usando picamera
+# 1. Inicializar la camara nativa de la Raspberry Pi
+#picam = Picamera2()
+
+# 2. Configurar la resolucion y el formato de los frames (RGB888 para OpenCV)
+#picam.configure(picam.create_preview_configuration(main={"size": (640, 480), "format": "RGB888"}))
+
+# 3. Arrancar el flujo de la camara
+#picam.start()
+
 
 #inicializa el detector de rostros de dlib
 detector = dlib.get_frontal_face_detector()
@@ -119,6 +131,7 @@ tiempo_anterior = 0
 texto_fps = []
 
 while True:
+    #frame = picam.capture_array()
     texto_fps = [
         f"Actual: {tiempo_actual:.4f}s",
         f"Min:    {tiempo_min:.4f}s",
